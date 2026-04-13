@@ -1,6 +1,6 @@
 import requests
 
-url = "https://books.toscrape.com/catalogue/category/books/travel_2/index.html"
+url = "https://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
 page = requests.get(url)
 
 # voir le code html source
