@@ -9,6 +9,22 @@ doc = BeautifulSoup(page, "html.parser")
 title = doc.title.string
 print("title:", title)
 
+#extraction url product page
+
+#extraction upc
+upc = doc.find("td")
+print("upc:", upc.text)
+
+#price including tax
+
+#price excluding tax
+
+#number avalaible
+
+#extraction product description
+product_description_div = doc.find(id="product_description")
+product_description = product_description_div.find_next_sibling("p")
+print("description produit:", product_description.text)
 
 # voir le code parsé par beautiful soup
-print(doc)
+#print(doc)
