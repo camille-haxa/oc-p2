@@ -1,7 +1,14 @@
 import requests
+from bs4 import BeautifulSoup
 
-url = "https://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
-page = requests.get(url)
+url = "https://books.toscrape.com/catalogue/shakespeares-sonnets_989/"
+page = requests.get(url).text
+doc = BeautifulSoup(page, "html.parser")
 
-# voir le code html source
-print(page.content)
+#extraction du titre de la page
+title = doc.title.string
+print("title:", title)
+
+
+# voir le code parsé par beautiful soup
+print(doc)
