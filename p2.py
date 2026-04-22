@@ -24,6 +24,8 @@ print("upc:", upc.text)
 #price excluding tax
 
 #number avalaible
+availability = doc.find("tr:nth-child(5)")
+print("number available:", availability)
 
 #extraction product description
 product_description_div = doc.find(id="product_description")
@@ -31,8 +33,12 @@ product_description = product_description_div.find_next_sibling("p")
 print("description produit:", product_description.text)
 
 #category
+category_list = doc.select("ul > li:nth-of-type(3)", limit=1)
+print("category:", category_list)
 
 #review rating
+rating = doc.find("p", class_="star-rating Four")
+print("review rating:", rating)
 
 #image url
 image = doc.img['src']
