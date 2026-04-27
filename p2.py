@@ -27,8 +27,8 @@ price_excluding_tax = doc.find(text="Price (excl. tax)")
 print("prix HT:", price_excluding_tax.next.text)
 
 #number avalaible
-#availability = doc.find(text="Availability")
-#print("number available:", availability.next.text)
+available_number = doc.find(class_="table table-striped").find_all('td')[5]
+print("number available:", available_number.text)
 
 #extraction product description
 product_description_div = doc.find(id="product_description")
