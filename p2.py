@@ -28,7 +28,8 @@ print("prix HT:", price_excluding_tax.next.text)
 
 #number avalaible
 available_number = doc.find(class_="table table-striped").find_all('td')[5]
-print("number available:", available_number.text)
+stock = available_number.text.replace("In stock (","").replace(" available)","")
+print("number available:", stock)
 
 #extraction product description
 product_description_div = doc.find(id="product_description")
@@ -40,7 +41,7 @@ category_list = doc.find(class_="breadcrumb").find_all('li')[2]
 print("category:", category_list.text.strip())
 
 #review rating
-#rating = doc.find("p", class_="star-rating Four")
+#rating = doc.find(class_="col-sm-6 product_main").find_all('p')[2]
 #print("review rating:", rating)
 
 #image url
