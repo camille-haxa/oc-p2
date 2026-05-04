@@ -1,6 +1,7 @@
 import requests
 import re
 from bs4 import BeautifulSoup
+import csv
 
 MAIN_URL = "https://books.toscrape.com"
 
@@ -45,7 +46,7 @@ category = category_list.text.strip()
 print("category:", category)
 
 #review rating
-rating = doc.find(class_="col-sm-6 product_main").find('p', class_=re.compile("^star-rating.+?"))['class'][1]
+rating = doc.find(class_="col-sm-6 product_main").find('p', class_="star-rating")['class'][1]
 print("review rating:", rating)
 
 #image url
