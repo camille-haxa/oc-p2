@@ -41,7 +41,7 @@ product_description = product_description_div.find_next_sibling("p").text
 print("description produit:", product_description)
 
 #category
-category_list = doc.find(class_="breadcrumb").find_all('li')[2]
+category_list = doc.find(class_="breadcrumb").find_all('li')[-2]
 category = category_list.text.strip()
 print("category:", category)
 
