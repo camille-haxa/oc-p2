@@ -11,8 +11,8 @@ page = requests.get(url).text
 doc = BeautifulSoup(page, "html.parser")
 
 #extraction du titre de la page
-title = doc.h1.string
-print("title:", title)
+page_title = doc.h1.string
+print("title:", page_title)
 
 #extraction url product page
 page_url = url
@@ -23,12 +23,12 @@ upc = doc.find(text="UPC").next.text
 print("upc:", upc)
 
 #price including tax
-price_including_tax = doc.find(text="Price (incl. tax)").next.text
-print("prix TTC:", price_including_tax)
+price_with_tax = doc.find(text="Price (incl. tax)").next.text
+print("prix TTC:", price_with_tax)
 
 #price excluding tax
-price_excluding_tax = doc.find(text="Price (excl. tax)").next.text
-print("prix HT:", price_excluding_tax)
+price_no_tax = doc.find(text="Price (excl. tax)").next.text
+print("prix HT:", price_no_tax)
 
 #number avalaible
 available_number = doc.find(class_="table table-striped").find_all('td')[5]
@@ -53,5 +53,15 @@ print("review rating:", rating)
 image = doc.img['src'].replace("../../",MAIN_URL+"/")
 print("image url:", image)
 
+# créer une liste pour les en têtes
+en_tete = ['product_page_url', 'universal_product_code(upc)', 'title', 'price_including_tax', 'price_excluding_tax', 'number_available', 'product_description', 'category', 'review_rating', 'image_url' ]
+#créer un nouveau fichier et instancier un objet writer
+with open('data.csv', 'w') as csv_file:
+    writer = csv.writer(csv_file, delimiter=',')
+    writer.writerow(en_tete)
+    #créer une ligne avec les données
+    ligne = [page_url, upc, page_title, price_with_tax, price_no_tax, stock, product_description, category, rating, image]
+    writer.writerow(ligne)
+    
 # voir le code parsé par beautiful soup
 #print(doc)
