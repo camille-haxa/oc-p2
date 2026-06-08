@@ -6,14 +6,26 @@ import csv
 MAIN_URL = "https://books.toscrape.com"
 
 #récupérer l'url et les infos d'une catégorie
-url = "https://books.toscrape.com/catalogue/category/books/mystery_3/"
-page = requests.get(url).text
-doc = BeautifulSoup(page, "html.parser")
+base_url = "https://books.toscrape.com/catalogue/category/books/mystery_3/"
+doc = requests.get(base_url).text
+soup = BeautifulSoup(doc, "html.parser")
+
+
+#TODO:extraire toutes les pages de la catégorie
+#trouver le nombre de pages:
+page_numbers = soup.find(class_='current').text.split()[-1]
+print(page_numbers)
+
+
+
+
 
 #extraire tous les livres de la catégorie
-all_books = doc.find_all('article', class_='product_pod')
+all_books = soup.find_all('article', class_='product_pod')
 #print("all books:", all_books)
-#TODO:extraire toutes les pages de la catégorie
+
+
+
 
 #definir une fonction pour recuperer les details de chaque livre sur l'url de chaque livre
 def book_details(book_url):
@@ -44,6 +56,7 @@ def book_details(book_url):
         'image url': image
     }
 
+
 #definir une fonction pour inscrire les données dans un fichier csv
 def ecriture_csv(data, filename):
 
@@ -54,6 +67,7 @@ def ecriture_csv(data, filename):
     #créer une ligne avec les données
         for book in data:
             writer.writerow([book['url'], book['upc'], book['title'], book['prix TTC'], book['prix HT'], book['number available'], book['product description'], book['category'], book['rating'], book['image url']])
+
 
 
 #faire une boucle pour récupèrer les infos de chaque livre
