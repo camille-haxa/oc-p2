@@ -13,15 +13,18 @@ soup = BeautifulSoup(doc, "html.parser")
 
 #TODO:extraire toutes les pages de la catégorie
 #trouver le nombre de pages:
-page_numbers = soup.find(class_='current').text.split()[-1]
+page_numbers = int(soup.find(class_='current').text.split()[-1])
 print(page_numbers)
 
-
-
+#contruire l'url des pages de la catégorie:
+page = 1
+for p in range (1, page_numbers+1):
+    page_url = f"{base_url}page-{p}.html"
+    print(page_url)
 
 
 #extraire tous les livres de la catégorie
-all_books = soup.find_all('article', class_='product_pod')
+    all_books = soup.find_all('article', class_='product_pod')
 #print("all books:", all_books)
 
 
