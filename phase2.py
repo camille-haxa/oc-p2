@@ -6,12 +6,11 @@ import csv
 MAIN_URL = "https://books.toscrape.com"
 
 #récupérer l'url et les infos d'une catégorie
-base_url = "https://books.toscrape.com/catalogue/category/books/mystery_3/"
+base_url = f"{MAIN_URL}/catalogue/category/books/mystery_3/"
 doc = requests.get(base_url).text
 soup = BeautifulSoup(doc, "html.parser")
 
 
-#TODO:extraire toutes les pages de la catégorie
 #trouver le nombre de pages:
 page_numbers = int(soup.find(class_='current').text.split()[-1])
 print(page_numbers)
@@ -20,15 +19,16 @@ print(page_numbers)
 page = 1
 for p in range (1, page_numbers+1):
     page_url = f"{base_url}page-{p}.html"
+
     print(page_url)
+
+#TODO passer sur toutes les pages de la catégorie
+
 
 
 #extraire tous les livres de la catégorie
     all_books = soup.find_all('article', class_='product_pod')
 #print("all books:", all_books)
-
-
-
 
 #definir une fonction pour recuperer les details de chaque livre sur l'url de chaque livre
 def book_details(book_url):
