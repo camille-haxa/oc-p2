@@ -10,6 +10,7 @@ def book_details(book_url):
     response = requests.get(book_url).text
     book_doc = BeautifulSoup(response, "html.parser")
 
+    book_title = book.h3.a['title']
     upc = book_doc.find(text="UPC").next.text
     price_with_tax = book_doc.find(text="Price (incl. tax)").next.text
     price_no_tax = book_doc.find(text="Price (excl. tax)").next.text
@@ -36,8 +37,10 @@ def book_details(book_url):
 
 #definir une fonction pour inscrire les données dans un fichier csv
 def ecriture_csv(data, filename):
-
-#créer un nouveau fichier et instancier un objet writer
+# vérifier si fichier csv existe déjà
+# si oui -> écrire a la suite
+# si non :
+# créer un nouveau fichier et instancier un objet writer
     with open('cat_data.csv', 'w', newline='') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
         writer.writerow(['product_page_url', 'universal_product_code(upc)', 'title', 'price_including_tax', 'price_excluding_tax', 'number_available', 'product_description', 'category', 'review_rating', 'image_url' ])
@@ -73,7 +76,6 @@ for p in range (1, page_numbers+1):
 #faire une boucle pour récupèrer les infos de chaque livre
     all_books_data = []
     for book in all_books:
-        book_title = book.h3.a['title']
         book_url = book.h3.a['href'].replace("../../../",MAIN_URL+ '/catalogue' '/')
     #appeler la fonction pour recuperer le detail de chaque livre sur l'url correspondante:
         book_data = book_details(book_url)
