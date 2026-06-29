@@ -61,8 +61,8 @@ print(page_numbers)
 
 #contruire l'url des pages de la catégorie:
 page = 1
-for p in range (1, page_numbers+1):
-    page_url = f"{base_url}page-{p}.html"
+for i in range (1, page_numbers+1):
+    page_url = f"{base_url}page-{i}.html"
     print(page_url)
 #TODO passer sur toutes les pages de la catégorie
 #requests.get sur page_url dans la boucle for qui construit les url des pages pour recuperer tous les livres de la catégorie sur toutes les pages
