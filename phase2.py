@@ -86,7 +86,7 @@ for i in range (1, page_numbers+1):
 #print("books:", all_books_data)
 
 #appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
-        ecriture_csv(all_books_data, "cat_data.csv")
+    ecriture_csv(all_books_data, "cat_data.csv")
 
 
 # voir le code parsé par beautiful soup
