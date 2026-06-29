@@ -36,14 +36,16 @@ def book_details(book_url):
     }
 
 #definir une fonction pour inscrire les données dans un fichier csv
+header = ['product_page_url', 'universal_product_code(upc)', 'title', 'price_including_tax', 'price_excluding_tax', 'number_available', 'product_description', 'category', 'review_rating', 'image_url' ]
 def ecriture_csv(data, filename):
 # vérifier si fichier csv existe déjà
 # si oui -> écrire a la suite
 # si non :
 # créer un nouveau fichier et instancier un objet writer
-    with open('cat_data.csv', 'w', newline='') as csv_file:
+    with open('cat_data.csv', 'a', newline='') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
-        writer.writerow(['product_page_url', 'universal_product_code(upc)', 'title', 'price_including_tax', 'price_excluding_tax', 'number_available', 'product_description', 'category', 'review_rating', 'image_url' ])
+        if csv_file.tell() == 0:
+            writer.writerow(header)
     #créer une ligne avec les données
         for book in data:
             writer.writerow([book['url'], book['upc'], book['title'], book['prix TTC'], book['prix HT'], book['number available'], book['product description'], book['category'], book['rating'], book['image url']])
