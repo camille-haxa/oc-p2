@@ -38,12 +38,12 @@ def book_details(book_url):
 #definir une fonction pour inscrire les données dans un fichier csv
 header = ['product_page_url', 'universal_product_code(upc)', 'title', 'price_including_tax', 'price_excluding_tax', 'number_available', 'product_description', 'category', 'review_rating', 'image_url' ]
 def ecriture_csv(data, filename):
-# vérifier si fichier csv existe déjà
-# si oui -> écrire a la suite
-# si non :
-# créer un nouveau fichier et instancier un objet writer
+
+
+# créer un nouveau fichier et instancier un objet writer avec l'option append
     with open('cat_data.csv', 'a', newline='') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
+        # vérifier si fichier csv existe déjà et si non écrire le header
         if csv_file.tell() == 0:
             writer.writerow(header)
     #créer une ligne avec les données
@@ -66,7 +66,7 @@ page = 1
 for i in range (1, page_numbers+1):
     page_url = f"{base_url}page-{i}.html"
     print(page_url)
-#TODO passer sur toutes les pages de la catégorie
+#passer sur toutes les pages de la catégorie
 #requests.get sur page_url dans la boucle for qui construit les url des pages pour recuperer tous les livres de la catégorie sur toutes les pages
     page_doc = requests.get(page_url).text
     page_soup = BeautifulSoup(page_doc, "html.parser")
@@ -83,11 +83,8 @@ for i in range (1, page_numbers+1):
         book_data = book_details(book_url)
     
         all_books_data.append(book_data)
-#print("books:", all_books_data)
 
 #appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
     ecriture_csv(all_books_data, "cat_data.csv")
 
 
-# voir le code parsé par beautiful soup
-#print(doc)
