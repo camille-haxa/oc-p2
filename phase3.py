@@ -39,7 +39,7 @@ def book_details(book_url):
 header = ['product_page_url', 'universal_product_code(upc)', 'title', 'price_including_tax', 'price_excluding_tax', 'number_available', 'product_description', 'category', 'review_rating', 'image_url' ]
 def ecriture_csv(data, filename):
     # créer un nouveau fichier et instancier un objet writer avec l'option append
-    with open('cat_data.csv', 'a', newline='') as csv_file:
+    with open('all_data.csv', 'a', newline='') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
         # vérifier si fichier csv existe déjà et si non écrire le header
         if csv_file.tell() == 0:
@@ -47,4 +47,22 @@ def ecriture_csv(data, filename):
     #créer une ligne avec les données
         for book in data:
             writer.writerow([book['url'], book['upc'], book['title'], book['prix TTC'], book['prix HT'], book['number available'], book['product description'], book['category'], book['rating'], book['image url']])
+            
+
+#récupérer l'url de chaque catégorie
+site_url = MAIN_URL
+main_doc = requests.get(site_url).text
+main_soup = BeautifulSoup(main_doc, "html.parser")
+cat_list = main_soup.find('ul', class_="nav nav-list").find('ul').find_all('li')
+print(cat_list)
+
+
+
+
+
+#trouver la liste des catégories
+
+for cat in cat_list:
+    cat_url = MAIN_URL+ cat.a['href']
+print(cat_url)
 
