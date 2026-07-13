@@ -56,13 +56,39 @@ main_soup = BeautifulSoup(main_doc, "html.parser")
 cat_list = main_soup.find('ul', class_="nav nav-list").find('ul').find_all('li')
 print(cat_list)
 
-
-
-
-
-#trouver la liste des catégories
-
 for cat in cat_list:
-    cat_url = MAIN_URL+ cat.a['href']
-print(cat_url)
+    cat_url = MAIN_URL+ '/'+ cat.a['href']
+    print(cat_url)
 
+    doc = requests.get(cat_url).text
+    soup = BeautifulSoup(doc, "html.parser")
+
+        #trouver le nombre de pages:
+    page_numbers = int(soup.find(class_='current').text.split()[-1])
+    print(page_numbers)
+
+    #contruire l'url des pages de la catégorie:
+    page = 1
+    for i in range (1, page_numbers+1):
+        page_url = f"{base_url}page-{i}.html"
+        print(page_url)
+    #passer sur toutes les pages de la catégorie
+    #requests.get sur page_url dans la boucle for qui construit les url des pages pour recuperer tous les livres de la catégorie sur toutes les pages
+        page_doc = requests.get(page_url).text
+        page_soup = BeautifulSoup(page_doc, "html.parser")
+    #extraire tous les livres de la catégorie
+        all_books = page_soup.find_all('article', class_='product_pod')
+    #print("all books:", all_books)
+
+
+    #faire une boucle pour récupèrer les infos de chaque livre
+        all_books_data = []
+        for book in all_books:
+            book_url = book.h3.a['href'].replace("../../../",MAIN_URL+ '/catalogue' '/')
+        #appeler la fonction pour recuperer le detail de chaque livre sur l'url correspondante:
+            book_data = book_details(book_url)
+        
+            all_books_data.append(book_data)
+
+    #appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
+        ecriture_csv(all_books_data, "all_data.csv")
