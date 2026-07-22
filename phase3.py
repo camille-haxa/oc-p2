@@ -1,5 +1,6 @@
 import requests
 import re
+#import os
 from bs4 import BeautifulSoup
 import csv
 
@@ -44,10 +45,20 @@ def ecriture_csv(data, filename):
         # vérifier si fichier csv existe déjà et si non écrire le header
         if csv_file.tell() == 0:
             writer.writerow(header)
-    #créer une ligne avec les données
+        #créer une ligne avec les données
         for book in data:
             writer.writerow([book['url'], book['upc'], book['title'], book['prix TTC'], book['prix HT'], book['number available'], book['product description'], book['category'], book['rating'], book['image url']])
-          
+
+#definir une fonction pour telecharger les images des livres
+#def download_image(image, save_path):
+    #image_doc = requests.get(image)
+    #if image_doc.status_code == 200:
+        #with open(save_path, 'wb') as file:
+            #file.write(image_doc.content)  
+
+#créer dossier contenant les images de chaque livre
+#books_images_path = 'books_images'       
+#os.makedirs(books_images_path, exist_ok=True)
 
 #récupérer l'url de chaque catégorie
 site_url = MAIN_URL
@@ -64,12 +75,12 @@ for cat in cat_list:
     soup = BeautifulSoup(doc, "html.parser")
 
     #trouver le nombre de pages:
-    #condition pour diff2rencier si 1 seule page ou plusieurs
+    #condition pour différencier si 1 seule page ou plusieurs
     page_urls = []   
     if soup.find(class_='current') == None:
         page_url = f"{cat_url}index.html"
         page_urls.append(page_url)
-        print(page_url)
+        print(page_url, page_urls)
     else :
         page_numbers = int(soup.find(class_='current').text.split()[-1])
         print(page_numbers)
@@ -78,28 +89,24 @@ for cat in cat_list:
         for i in range (1, page_numbers+1):
             page_url = f"{cat_url}page-{i}.html"
             page_urls.append(page_url)
-            print(page_url)
-
-    #passer sur toutes les pages de la catégorie
-    #requests.get sur page_url dans la boucle for qui construit les url des pages pour recuperer tous les livres de la catégorie sur toutes les pages
-    page_doc = requests.get(page_url).text
-    page_soup = BeautifulSoup(page_doc, "html.parser")
-    #extraire tous les livres de la catégorie
-    all_books = page_soup.find_all('article', class_='product_pod')
-    #print("all books:", all_books)
-
-    #faire une boucle pour récupèrer les infos de chaque livre
-    all_books_data = []
-    for book in all_books:
-        book_url = book.h3.a['href'].replace("../../../",MAIN_URL+ '/catalogue' '/')
-        #appeler la fonction pour recuperer le detail de chaque livre sur l'url correspondante:
-        book_data = book_details(book_url)
+            print(page_url, page_urls)
         
-        all_books_data.append(book_data)
+    #passer sur toutes les pages de toutes les catégorie en bouclant sur la liste page_urls créée précédemment
+    for p in page_urls:
+        page_doc = requests.get(p).text
+        page_soup = BeautifulSoup(page_doc, "html.parser")
+        #extraire tous les livres de la catégorie
+        all_books = page_soup.find_all('article', class_='product_pod')
+        
+
+        #faire une boucle pour récupèrer les infos de chaque livre
+        all_books_data = []
+        for book in all_books:
+            book_url = book.h3.a['href'].replace("../../../",MAIN_URL+ '/catalogue' '/')
+            #appeler la fonction pour recuperer le detail de chaque livre sur l'url correspondante:
+            book_data = book_details(book_url)
+            all_books_data.append(book_data)
 
 
-    #appeler la fonction pour passer sur toutes les pages de la catégorie
-    #get_books_of_category(page_urls)
-
-    #appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
-    ecriture_csv(all_books_data, "all_data.csv")
+        #appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
+        ecriture_csv(all_books_data, "all_data.csv")
