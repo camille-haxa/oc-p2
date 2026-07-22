@@ -17,7 +17,7 @@ def book_details(book_url):
     available_number = book_doc.find(class_="table table-striped").find_all('td')[5]
     stock = available_number.text.replace("In stock (","").replace(" available)","")
     product_description_div = book_doc.find(id="product_description")
-    product_description = product_description_div.find_next_sibling("p").text
+    product_description = product_description_div.find_next_sibling("p").text if product_description_div else "Description non disponible"
     category_list = book_doc.find(class_="breadcrumb").find_all('li')[-2]
     category = category_list.text.strip()
     rating = book_doc.find(class_="col-sm-6 product_main").find('p', class_="star-rating")['class'][1]
@@ -47,7 +47,7 @@ def ecriture_csv(data, filename):
     #créer une ligne avec les données
         for book in data:
             writer.writerow([book['url'], book['upc'], book['title'], book['prix TTC'], book['prix HT'], book['number available'], book['product description'], book['category'], book['rating'], book['image url']])
-            
+          
 
 #récupérer l'url de chaque catégorie
 site_url = MAIN_URL
@@ -58,42 +58,48 @@ print(cat_list)
 
 #construire l'url de chaque catégorie
 for cat in cat_list:
-    cat_url = MAIN_URL+ '/'+ cat.a['href']
-    print(cat_url)
+    cat_url = MAIN_URL+ '/'+ cat.a['href'].removesuffix("index.html")
     #requests get sur l'url de la catégorie
     doc = requests.get(cat_url).text
     soup = BeautifulSoup(doc, "html.parser")
 
     #trouver le nombre de pages:
-    #condition pour diff2rencier si 1 seule page ou plusieurs   
+    #condition pour diff2rencier si 1 seule page ou plusieurs
+    page_urls = []   
     if soup.find(class_='current') == None:
-        page_url = cat_url
+        page_url = f"{cat_url}index.html"
+        page_urls.append(page_url)
+        print(page_url)
     else :
         page_numbers = int(soup.find(class_='current').text.split()[-1])
-        #print(page_numbers)
-    #contruire l'url des pages de la catégorie:
+        print(page_numbers)
+        #contruire l'url des pages de la catégorie:
         page = 1
         for i in range (1, page_numbers+1):
             page_url = f"{cat_url}page-{i}.html"
-            #print(page_url)
+            page_urls.append(page_url)
+            print(page_url)
 
-#passer sur toutes les pages de la catégorie
-#requests.get sur page_url dans la boucle for qui construit les url des pages pour recuperer tous les livres de la catégorie sur toutes les pages
-page_doc = requests.get(page_url).text
-page_soup = BeautifulSoup(page_doc, "html.parser")
-#extraire tous les livres de la catégorie
-all_books = page_soup.find_all('article', class_='product_pod')
-#print("all books:", all_books)
+    #passer sur toutes les pages de la catégorie
+    #requests.get sur page_url dans la boucle for qui construit les url des pages pour recuperer tous les livres de la catégorie sur toutes les pages
+    page_doc = requests.get(page_url).text
+    page_soup = BeautifulSoup(page_doc, "html.parser")
+    #extraire tous les livres de la catégorie
+    all_books = page_soup.find_all('article', class_='product_pod')
+    #print("all books:", all_books)
+
+    #faire une boucle pour récupèrer les infos de chaque livre
+    all_books_data = []
+    for book in all_books:
+        book_url = book.h3.a['href'].replace("../../../",MAIN_URL+ '/catalogue' '/')
+        #appeler la fonction pour recuperer le detail de chaque livre sur l'url correspondante:
+        book_data = book_details(book_url)
+        
+        all_books_data.append(book_data)
 
 
-#faire une boucle pour récupèrer les infos de chaque livre
-all_books_data = []
-for book in all_books:
-    book_url = book.h3.a['href'].replace("../../../",MAIN_URL+ '/catalogue' '/')
-    #appeler la fonction pour recuperer le detail de chaque livre sur l'url correspondante:
-    book_data = book_details(book_url)
-    
-    all_books_data.append(book_data)
+    #appeler la fonction pour passer sur toutes les pages de la catégorie
+    #get_books_of_category(page_urls)
 
-#appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
-ecriture_csv(all_books_data, "all_data.csv")
+    #appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
+    ecriture_csv(all_books_data, "all_data.csv")
