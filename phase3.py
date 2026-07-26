@@ -1,6 +1,5 @@
 import requests
 import re
-#import os
 from bs4 import BeautifulSoup
 import csv
 
@@ -22,7 +21,7 @@ def book_details(book_url):
     category_list = book_doc.find(class_="breadcrumb").find_all('li')[-2]
     category = category_list.text.strip()
     rating = book_doc.find(class_="col-sm-6 product_main").find('p', class_="star-rating")['class'][1]
-    image = book_doc.img['src'].replace("../../",MAIN_URL+"/")
+    image_path = book_doc.img['src'].replace("../../",MAIN_URL+"/")
     return {
         'title': book_title,
         'url': book_url,
@@ -33,7 +32,7 @@ def book_details(book_url):
         'product description': product_description,
         'category': category,
         'rating': rating,
-        'image url': image
+        'image url': image_path
     }
 
 #definir une fonction pour inscrire les données dans un fichier csv
@@ -49,16 +48,6 @@ def ecriture_csv(data, filename):
         for book in data:
             writer.writerow([book['url'], book['upc'], book['title'], book['prix TTC'], book['prix HT'], book['number available'], book['product description'], book['category'], book['rating'], book['image url']])
 
-#definir une fonction pour telecharger les images des livres
-#def download_image(image, save_path):
-    #image_doc = requests.get(image)
-    #if image_doc.status_code == 200:
-        #with open(save_path, 'wb') as file:
-            #file.write(image_doc.content)  
-
-#créer dossier contenant les images de chaque livre
-#books_images_path = 'books_images'       
-#os.makedirs(books_images_path, exist_ok=True)
 
 #récupérer l'url de chaque catégorie
 site_url = MAIN_URL
