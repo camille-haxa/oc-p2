@@ -1,9 +1,15 @@
 import requests
 import re
+import os
 from bs4 import BeautifulSoup
 import csv
 
 MAIN_URL = "https://books.toscrape.com"
+
+BOOKS_IMAGES_DIR = 'books_images'
+
+#créer dossier pour les images de chaque livre
+os.makedirs(books_images_dir, exist_ok=True)
 
 #definir une fonction pour recuperer les details de chaque livre sur l'url de chaque livre
 def book_details(book_url):
@@ -21,7 +27,7 @@ def book_details(book_url):
     category_list = book_doc.find(class_="breadcrumb").find_all('li')[-2]
     category = category_list.text.strip()
     rating = book_doc.find(class_="col-sm-6 product_main").find('p', class_="star-rating")['class'][1]
-    image_path = book_doc.img['src'].replace("../../",MAIN_URL+"/")
+    image_url = book_doc.img['src'].replace("../../",MAIN_URL+"/")
     return {
         'title': book_title,
         'url': book_url,
@@ -32,7 +38,7 @@ def book_details(book_url):
         'product description': product_description,
         'category': category,
         'rating': rating,
-        'image url': image_path
+        'image url': image_url
     }
 
 #definir une fonction pour inscrire les données dans un fichier csv
@@ -49,17 +55,15 @@ def ecriture_csv(data, filename):
             writer.writerow([book['url'], book['upc'], book['title'], book['prix TTC'], book['prix HT'], book['number available'], book['product description'], book['category'], book['rating'], book['image url']])
 
 #definir une fonction pour telecharger les images des livres
-image_filename =  f"{book_details['upc']}.jpg"
-image_file = os.path.join(images_folder, image_filename)
-def download_image(image_path, image_file):
-    image_doc = requests.get(image_path)
+def download_image(image_url):
+    image_filename =  f"{book_data['upc']}.jpg"
+    image_file = os.path.join(books_images_dir, image_filename)
+    image_doc = requests.get(image_url)
     if image_doc.status_code == 200:
         with open(image_file, 'wb') as file:
             file.write(image_doc.content)
 
-#créer dossier contenant les images de chaque livre
-books_images_dir = 'books_images'
-os.makedirs(books_images_dir, exist_ok=True)
+
 
 #récupérer l'url de chaque catégorie
 site_url = MAIN_URL
