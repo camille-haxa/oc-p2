@@ -55,8 +55,9 @@ def download_image(image_path, save_path):
         with open(save_path, 'wb') as file:
             file.write(image_doc.content)
 
-
-
+#créer dossier contenant les images de chaque livre
+books_images_path = 'books_images'
+os.makedirs(books_images_path, exist_ok=True)
 
 #récupérer l'url de chaque catégorie
 site_url = MAIN_URL
