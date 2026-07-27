@@ -56,8 +56,8 @@ def download_image(image_path, save_path):
             file.write(image_doc.content)
 
 #créer dossier contenant les images de chaque livre
-books_images_path = 'books_images'
-os.makedirs(books_images_path, exist_ok=True)
+books_images_dir = 'books_images'
+os.makedirs(books_images_dir, exist_ok=True)
 
 #récupérer l'url de chaque catégorie
 site_url = MAIN_URL
@@ -107,6 +107,7 @@ for cat in cat_list:
             all_books_data.append(book_data)
 
             #TODO appeler la fonction image_download sur l'url de chaque livre
+            
 
         #appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
         ecriture_csv(all_books_data, "all_data.csv")
