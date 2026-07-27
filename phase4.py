@@ -48,6 +48,15 @@ def ecriture_csv(data, filename):
         for book in data:
             writer.writerow([book['url'], book['upc'], book['title'], book['prix TTC'], book['prix HT'], book['number available'], book['product description'], book['category'], book['rating'], book['image url']])
 
+#definir une fonction pour telecharger les images des livres
+def download_image(image_path, save_path):
+    image_doc = requests.get(image_path)
+    if image_doc.status_code == 200:
+        with open(save_path, 'wb') as file:
+            file.write(image_doc.content)
+
+
+
 
 #récupérer l'url de chaque catégorie
 site_url = MAIN_URL
@@ -96,6 +105,7 @@ for cat in cat_list:
             book_data = book_details(book_url)
             all_books_data.append(book_data)
 
+            #TODO appeler la fonction image_download sur l'url de chaque livre
 
         #appeler la fonction csv sur les données de chaque livre pour créer un fichier contenant les données de chaque livre
         ecriture_csv(all_books_data, "all_data.csv")
