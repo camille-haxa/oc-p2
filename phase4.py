@@ -9,7 +9,7 @@ MAIN_URL = "https://books.toscrape.com"
 BOOKS_IMAGES_DIR = 'books_images'
 
 #créer dossier pour les images de chaque livre
-os.makedirs(books_images_dir, exist_ok=True)
+os.makedirs(BOOKS_IMAGES_DIR, exist_ok=True)
 
 #definir une fonction pour recuperer les details de chaque livre sur l'url de chaque livre
 def book_details(book_url):
@@ -57,7 +57,7 @@ def ecriture_csv(data, filename):
 #definir une fonction pour telecharger les images des livres
 def download_image(image_url):
     image_filename =  f"{book_data['upc']}.jpg"
-    image_file = os.path.join(books_images_dir, image_filename)
+    image_file = os.path.join(BOOKS_IMAGES_DIR, image_filename)
     image_doc = requests.get(image_url)
     if image_doc.status_code == 200:
         with open(image_file, 'wb') as file:
