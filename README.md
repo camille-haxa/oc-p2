@@ -7,13 +7,13 @@ Ce script final permet de télécharger en local sur votre ordinateur un ensembl
 - **cloner le projet**  
 ``git clone https://github.com/camille-haxa/oc-p2.git``
 
-- **créer l'environnement virtuel python**   
-``python -m venv env``
+- **installer les outils de gestion d'environnement virtuel python**   
+``python -m venv env``  
+
+- **créer l'envirronnement python et installer les paquets requis**   
+``pip install -r requirements.txt``   
 - **activer l'environnement virtuel**  
 ``source env/bin/activate``
-
-- **installer les paquets requis**   
-``pip install -r requirements.txt`` 
 
 - **exécuter le script**   
 ``python3 phase4.py``  
